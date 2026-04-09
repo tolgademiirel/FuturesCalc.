@@ -174,15 +174,6 @@ body::before { display: none; }
   display: block;
   flex-shrink: 0;
 }
-.cico img,
-#selectedCoinImg,
-#calcCoinIcon {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-#calcCoinIcon { mix-blend-mode: normal !important; }
 .topbar-r { display: flex; align-items: center; gap: 10px; }
 .ibtn {
   width: 42px;
@@ -206,17 +197,17 @@ body::before { display: none; }
 }
 
 .wrap {
-  max-width: 1280px;
+  max-width: 980px;
   margin: 0 auto;
   padding: 34px 22px 130px;
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 380px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "hero hero"
-    "asset form"
-    "asset results";
+    "hero"
+    "form"
+    "results";
   gap: 22px;
   align-items: start;
 }
@@ -232,8 +223,13 @@ body::before { display: none; }
     radial-gradient(circle at 95% 0%, rgba(111,151,255,0.16), transparent 22%),
     linear-gradient(135deg, rgba(7,13,24,0.98), rgba(4,10,20,0.94));
   box-shadow: var(--shadow);
-  text-align: left;
+  text-align: center;
 }
+.ph > * {
+  position: relative;
+  z-index: 1;
+}
+
 [data-theme="light"] .ph {
   background:
     radial-gradient(circle at 85% 18%, rgba(79,124,255,0.12), transparent 26%),
@@ -290,6 +286,7 @@ h1 em {
 }
 .psub {
   max-width: 720px;
+  margin: 0 auto;
   color: var(--text3);
   font-size: 13px;
   font-family: 'JetBrains Mono', monospace;
@@ -315,9 +312,11 @@ h1 em {
   transition: transform var(--tr), border-color var(--tr), box-shadow var(--tr), background var(--tr);
 }
 .card:hover { border-color: var(--border2); }
-#coinSelectorCard { grid-area: asset; position: sticky; top: 98px; }
-#mainCalcCard { grid-area: form; }
-.results { grid-area: results; display: none; }
+#mainCalcCard {
+  grid-area: form;
+  width: 100%;
+}
+.results { grid-area: results; display: none; width: 100%; }
 .results.show {
   display: grid;
   gap: 18px;
@@ -407,33 +406,6 @@ input[type="text"]:focus,
   box-shadow: 0 0 0 4px rgba(79,214,255,0.10), 0 12px 28px rgba(79,214,255,0.10) !important;
 }
 input::placeholder { color: var(--text3); }
-#coinSearch { padding-left: 48px !important; }
-#coinDropdown {
-  background: var(--surface-strong) !important;
-  border: 1px solid var(--border2) !important;
-  border-radius: 18px !important;
-  box-shadow: var(--shadow) !important;
-}
-#coinList > div {
-  padding: 12px 14px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
-}
-#selectedPairDisplay {
-  background: linear-gradient(180deg, rgba(79,214,255,0.10), rgba(124,163,255,0.06)) !important;
-  border: 1px solid rgba(79,214,255,0.22) !important;
-  border-radius: 18px !important;
-  padding: 12px 14px !important;
-}
-#selectedPairName { color: var(--accent2) !important; font-size: 15px !important; }
-#selectedPairFull { color: var(--text3) !important; }
-#selectedPairDisplay button {
-  background: rgba(255,107,134,0.10) !important;
-  border: 1px solid rgba(255,107,134,0.18) !important;
-  color: var(--short) !important;
-  border-radius: 999px !important;
-  padding: 6px 10px !important;
-}
 .tgrp {
   display: flex;
   gap: 6px;
@@ -871,17 +843,12 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.14); }
 
 @media (max-width: 1080px) {
   .wrap {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "hero"
-      "asset"
-      "form"
-      "results";
+    max-width: 100%;
+    padding: 24px 18px 110px;
   }
-  #coinSelectorCard { position: static; }
 }
 @media (max-width: 720px) {
-  .topbar { height: 72px; padding: 0 16px; }
+  .topbar { position: static; height: 72px; padding: 0 16px; }
   .section-title-wrap { gap: 10px; }
   .section-title-icon { width: 24px; height: 24px; }
   .wrap { padding: 18px 14px 110px; gap: 16px; }
@@ -910,45 +877,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.14); }
     <div class="ptag">FuturesCalc. · Kripto Risk Paneli</div>
     <p class="psub">Kâr/zarar analizi</p>
   </div>
-  <div class="card" id="coinSelectorCard">
-    <div class="field">
-      <div class="frow"><label>İşlem Çifti / Parite</label><span class="fhint" id="selectedPairHint" style="display:none;">Seçildi ✓</span></div>
-      <div style="position:relative;margin-top:7px;">
-        <input type="text" id="coinSearch" placeholder="Ara: BTC, ETH, SOL..." autocomplete="off"
-          style="width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;padding:13px 16px 13px 44px;outline:none;transition:border-color var(--tr),box-shadow var(--tr);"
-          oninput="filterCoins(this.value)" onfocus="openDropdown()" onblur="setTimeout(closeDropdown,180)">
-        <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none;">🔎</span>
-        <div id="coinDropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;z-index:500;max-height:260px;overflow-y:auto;box-shadow:var(--shadow);">
-          <div id="coinList"></div>
-        </div>
-      </div>
-      <div id="selectedPairDisplay" style="display:none;margin-top:10px;background:var(--acg2);border:1px solid rgba(125,211,252,0.3);border-radius:10px;padding:10px 14px;display:none;align-items:center;gap:10px;">
-        <img id="selectedCoinImg" src="" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;" onerror="this.style.display='none'">
-        <div>
-          <div id="selectedPairName" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);">—</div>
-          <div id="selectedPairFull" style="font-size:11px;color:var(--text3);margin-top:2px;">—</div>
-        </div>
-        <button onclick="clearPair()" style="margin-left:auto;background:var(--shortbg);border:1px solid rgba(255,77,109,0.3);color:var(--short);font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:3px 9px;border-radius:7px;cursor:pointer;">✕ Temizle</button>
-      </div>
-    </div>
-    <div class="field" style="margin-bottom:0;">
-      <div style="display:flex;flex-wrap:wrap;gap:6px;">
-        <span class="clbl" style="display:flex;align-items:center;padding-right:4px;">Hızlı Seçim:</span>
-        <button class="lp" onclick="quickSelect('BTCUSDT','Bitcoin','BTC','https://s2.coinmarketcap.com/static/img/coins/64x64/1.png')">BTC</button>
-        <button class="lp" onclick="quickSelect('ETHUSDT','Ethereum','ETH','https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png')">ETH</button>
-        <button class="lp" onclick="quickSelect('SOLUSDT','Solana','SOL','https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png')">SOL</button>
-        <button class="lp" onclick="quickSelect('BNBUSDT','BNB','BNB','https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png')">BNB</button>
-        <button class="lp" onclick="quickSelect('XRPUSDT','XRP','XRP','https://s2.coinmarketcap.com/static/img/coins/64x64/52.png')">XRP</button>
-        <button class="lp" onclick="quickSelect('DOGEUSDT','Dogecoin','DOGE','https://s2.coinmarketcap.com/static/img/coins/64x64/74.png')">DOGE</button>
-        <button class="lp" onclick="quickSelect('ADAUSDT','Cardano','ADA','https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png')">ADA</button>
-        <button class="lp" onclick="quickSelect('AVAXUSDT','Avalanche','AVAX','https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png')">AVAX</button>
-      </div>
-    </div>
-  </div>
   <div class="card" id="mainCalcCard">
     <div class="ch">
       <div class="section-title-wrap">
-        <img class="section-title-icon" src="data:image/png;base64,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" alt="Bitcoin logo">
         <span class="clbl" id="calcCardLabel">Pozisyon Parametreleri</span>
       </div>
     </div>
@@ -1188,86 +1119,6 @@ let cv='0', cex='', cnew=true, clop=false;
 function updC(){ const d=cv.length>13?parseFloat(cv).toExponential(5):cv; document.getElementById('cNum').textContent=d||'0'; document.getElementById('cExpr').textContent=cex||'\u00a0'; }
 function cf(k){ if(k==='AC'){ cv='0'; cex=''; cnew=true; clop=false; updC(); return; } if(k==='DEL'){ cv=cv.length>1?cv.slice(0,-1):'0'; updC(); return; } if(k==='%'){ cv=String(parseFloat(cv)/100); updC(); return; } const isop=['÷','×','−','+'].includes(k); if(isop){ cex=(cex&&!clop?cex+cv+' '+k+' ':cv+' '+k+' '); cnew=true; clop=true; updC(); return; } if(k==='='){ if(!cex){ updC(); return; } const ex=(cex+cv).replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-'); try { const r=Function('"use strict";return('+ex+')')(); cex=ex.replace(/\//g,'÷').replace(/\*/g,'×').replace(/-/g,'−')+' ='; cv=String(parseFloat(r.toFixed(10))); cnew=true; clop=false; } catch(e) { cv='Hata'; } updC(); return; } if(cnew||cv==='0'){ cv=(k==='.'?'0.':k); cnew=false; clop=false; } else { if(k==='.'&&cv.includes('.')) return; cv+=k; clop=false; } updC(); }
 document.addEventListener('keydown',e=>{ if(!_calcOpen) return; const m={'0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','.':'.','Enter':'=','=':'=','Backspace':'DEL','Escape':'AC','+':'+','-':'−','*':'×','/':'÷','%':'%'}; if(m[e.key]){ e.preventDefault(); cf(m[e.key]); } });
-// ── Coin Selector ──────────────────────────────────────────────
-const CMC_COINS = [
-  {sym:'BTC',name:'Bitcoin',id:1},{sym:'ETH',name:'Ethereum',id:1027},{sym:'BNB',name:'BNB',id:1839},
-  {sym:'SOL',name:'Solana',id:5426},{sym:'XRP',name:'XRP',id:52},{sym:'DOGE',name:'Dogecoin',id:74},
-  {sym:'ADA',name:'Cardano',id:2010},{sym:'AVAX',name:'Avalanche',id:5805},{sym:'MATIC',name:'Polygon',id:3890},
-  {sym:'DOT',name:'Polkadot',id:6636},{sym:'LINK',name:'Chainlink',id:1975},{sym:'UNI',name:'Uniswap',id:7083},
-  {sym:'ATOM',name:'Cosmos',id:3794},{sym:'LTC',name:'Litecoin',id:2},{sym:'TRX',name:'TRON',id:1958},
-  {sym:'NEAR',name:'NEAR Protocol',id:6535},{sym:'ICP',name:'Internet Computer',id:8916},{sym:'APT',name:'Aptos',id:21794},
-  {sym:'ARB',name:'Arbitrum',id:11841},{sym:'OP',name:'Optimism',id:11840},{sym:'SUI',name:'Sui',id:20947},
-  {sym:'INJ',name:'Injective',id:7226},{sym:'FTM',name:'Fantom',id:3513},{sym:'SAND',name:'The Sandbox',id:6210},
-  {sym:'MANA',name:'Decentraland',id:1966},{sym:'AAVE',name:'Aave',id:7278},{sym:'CRV',name:'Curve DAO',id:6538},
-  {sym:'MKR',name:'Maker',id:1518},{sym:'SNX',name:'Synthetix',id:2586},{sym:'COMP',name:'Compound',id:5692},
-  {sym:'SUSHI',name:'SushiSwap',id:6758},{sym:'YFI',name:'Yearn.finance',id:5864},{sym:'1INCH',name:'1inch',id:8104},
-  {sym:'ENS',name:'Ethereum Name Service',id:13855},{sym:'GMT',name:'STEPN',id:18069},{sym:'APE',name:'ApeCoin',id:18876},
-  {sym:'LDO',name:'Lido DAO',id:8000},{sym:'PEPE',name:'Pepe',id:24478},{sym:'SHIB',name:'Shiba Inu',id:5994},
-  {sym:'FIL',name:'Filecoin',id:2280},{sym:'VET',name:'VeChain',id:3077},{sym:'ALGO',name:'Algorand',id:4030},
-  {sym:'XLM',name:'Stellar',id:512},{sym:'ETC',name:'Ethereum Classic',id:1321},{sym:'XMR',name:'Monero',id:328},
-  {sym:'HBAR',name:'Hedera',id:4642},{sym:'EGLD',name:'MultiversX',id:6892},{sym:'FLOW',name:'Flow',id:4558},
-  {sym:'THETA',name:'Theta Network',id:2416},{sym:'AXS',name:'Axie Infinity',id:6783},{sym:'GALA',name:'Gala',id:7080},
-  {sym:'WLD',name:'Worldcoin',id:13502},{sym:'SEI',name:'Sei',id:23149},{sym:'TIA',name:'Celestia',id:22861},
-  {sym:'BLUR',name:'Blur',id:23121},{sym:'CFX',name:'Conflux',id:7334},{sym:'AGIX',name:'SingularityNET',id:2424},
-  {sym:'FET',name:'Fetch.ai',id:3773},{sym:'RNDR',name:'Render',id:5690},{sym:'GRT',name:'The Graph',id:6719},
-  {sym:'ROSE',name:'Oasis Network',id:7653},{sym:'KAVA',name:'Kava',id:4846},{sym:'CHZ',name:'Chiliz',id:4066},
-  {sym:'HOT',name:'Holo',id:2682},{sym:'ZIL',name:'Zilliqa',id:2469},{sym:'ONE',name:'Harmony',id:3945},
-  {sym:'OCEAN',name:'Ocean Protocol',id:3911},{sym:'BAT',name:'Basic Attention Token',id:1697},{sym:'ZEC',name:'Zcash',id:1437},
-  {sym:'DASH',name:'Dash',id:131},{sym:'BCH',name:'Bitcoin Cash',id:1831},{sym:'BSV',name:'Bitcoin SV',id:3602},
-];
-
-let _selectedCoin = null;
-
-function imgUrl(id){ return `https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`; }
-
-function renderCoinList(list){
-  const el=document.getElementById('coinList');
-  if(!list.length){ el.innerHTML='<div style="padding:14px 16px;font-size:13px;color:var(--text3);font-family:JetBrains Mono,monospace;">Sonuç bulunamadı</div>'; return; }
-  el.innerHTML=list.slice(0,40).map(c=>`
-    <div onclick="selectCoin('${c.sym}USDT','${c.name}','${c.sym}','${imgUrl(c.id)}')"
-      style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;"
-      onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
-      <img src="${imgUrl(c.id)}" alt="${c.sym}" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;" onerror="this.style.display='none'">
-      <div><div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);">${c.sym}USDT</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">${c.name}</div></div>
-    </div>`).join('');
-}
-
-function filterCoins(q){
-  openDropdown();
-  const f=q.trim().toUpperCase();
-  const res=f?CMC_COINS.filter(c=>c.sym.includes(f)||c.name.toUpperCase().includes(f)):CMC_COINS;
-  renderCoinList(res);
-}
-
-function openDropdown(){
-  const dd=document.getElementById('coinDropdown');
-  dd.style.display='block';
-  if(!document.getElementById('coinSearch').value) renderCoinList(CMC_COINS);
-}
-function closeDropdown(){ document.getElementById('coinDropdown').style.display='none'; }
-
-function selectCoin(pair,name,sym,img){
-  _selectedCoin={pair,name,sym,img};
-  document.getElementById('coinSearch').value=pair;
-  document.getElementById('coinDropdown').style.display='none';
-  const disp=document.getElementById('selectedPairDisplay');
-  disp.style.display='flex';
-  document.getElementById('selectedCoinImg').src=img;
-  document.getElementById('selectedPairName').textContent=pair;
-  document.getElementById('selectedPairFull').textContent=name;
-  document.getElementById('selectedPairHint').style.display='';
-}
-
-function quickSelect(pair,name,sym,img){ selectCoin(pair,name,sym,img); document.getElementById('coinSearch').value=pair; }
-
-function clearPair(){
-  _selectedCoin=null;
-  document.getElementById('coinSearch').value='';
-  document.getElementById('selectedPairDisplay').style.display='none';
-  document.getElementById('selectedPairHint').style.display='none';
-}
-// ── End Coin Selector ──────────────────────────────────────────
-
 initLevInput(); setLev(10); updateStopBadge(); syncThemeToggle();
 </script>
 </body>
