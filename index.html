@@ -270,12 +270,14 @@ body::before { display: none; }
 }
 h1 {
   max-width: 760px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(36px, 6vw, 64px);
-  line-height: 0.98;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-  margin-bottom: 16px;
+  margin: 0 auto 18px;
+  text-align: center;
+  text-wrap: balance;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: clamp(38px, 6vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  font-weight: 800;
 }
 h1 em {
   font-style: normal;
@@ -285,13 +287,7 @@ h1 em {
   background-clip: text;
 }
 .psub {
-  max-width: 720px;
-  margin: 0 auto;
-  color: var(--text3);
-  font-size: 13px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.06em;
-  line-height: 1.7;
+  display: none;
 }
 
 .card,
@@ -874,8 +870,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.14); }
 <div class="wrap">
   <div class="ph">
     <h1>Kripto Likidasyon<br><em>Hesaplama Sistemi</em></h1>
-    <div class="ptag">FuturesCalc. · Kripto Risk Paneli</div>
-    <p class="psub">Kâr/zarar analizi</p>
+    <div class="ptag">Kripto Risk Paneli ve Kâr/zarar Analizi</div>
   </div>
   <div class="card" id="mainCalcCard">
     <div class="ch">
