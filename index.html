@@ -1,1 +1,1274 @@
-__FILE_CONTENT_PLACEHOLDER__
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="FuturesCalc. ile kripto likidasyon hesaplama, kâr/zarar analizi ve risk yönetimi araçları.">
+<title>FuturesCalc.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --tr: 0.24s cubic-bezier(.2,.8,.2,1); }
+
+[data-theme="dark"] {
+  --bg: #02050d;
+  --bg2: #07101d;
+  --bg3: #0b1627;
+  --surface: rgba(6, 13, 24, 0.84);
+  --surface-strong: rgba(8, 16, 30, 0.98);
+  --surface2: rgba(10, 20, 36, 0.94);
+  --panel-soft: rgba(255,255,255,0.025);
+  --border: rgba(98, 126, 178, 0.18);
+  --border2: rgba(105, 155, 238, 0.34);
+  --text: #f3f8ff;
+  --text2: #d3def2;
+  --text3: #7f93b6;
+  --accent: #6f97ff;
+  --accent2: #38bdf8;
+  --accent3: #8b8cff;
+  --acg: rgba(56, 189, 248, 0.18);
+  --acg2: rgba(56, 189, 248, 0.07);
+  --gold: #f7cb72;
+  --long: #38e79d;
+  --longbg: rgba(56,231,157,0.12);
+  --short: #ff6b86;
+  --shortbg: rgba(255,107,134,0.12);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.62);
+  --shadowsm: 0 18px 48px rgba(0, 0, 0, 0.42);
+  --topbarbg: rgba(3, 8, 18, 0.82);
+}
+[data-theme="light"] {
+  --bg: #eef4ff;
+  --bg2: #ffffff;
+  --bg3: #f5f8ff;
+  --surface: rgba(255,255,255,0.82);
+  --surface-strong: rgba(255,255,255,0.98);
+  --surface2: rgba(246,249,255,0.95);
+  --panel-soft: rgba(90, 116, 165, 0.05);
+  --border: rgba(95, 122, 177, 0.18);
+  --border2: rgba(92, 125, 192, 0.30);
+  --text: #0f172a;
+  --text2: #334155;
+  --text3: #64748b;
+  --accent: #4f7cff;
+  --accent2: #0ea5e9;
+  --accent3: #8b5cf6;
+  --acg: rgba(79,124,255,0.16);
+  --acg2: rgba(79,124,255,0.06);
+  --gold: #d97706;
+  --long: #0f9f6e;
+  --longbg: rgba(15,159,110,0.10);
+  --short: #e11d48;
+  --shortbg: rgba(225,29,72,0.08);
+  --shadow: 0 28px 70px rgba(15, 23, 42, 0.10);
+  --shadowsm: 0 16px 34px rgba(15, 23, 42, 0.08);
+  --topbarbg: rgba(238,244,255,0.72);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--tr), color var(--tr);
+  position: relative;
+}
+[data-theme="light"] body {
+  background: var(--bg);
+}
+body::before { display: none; }
+[data-theme="light"] body::before { display: none; }
+.amb { display: none; }
+.amb1, .amb2 { display: none; }
+[data-theme="light"] .amb1,
+[data-theme="light"] .amb2 { display: none; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 78px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--topbarbg);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  transition: background var(--tr), border-color var(--tr);
+}
+.topbar::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.logo::after { content: none; }
+.logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.logo-wordmark {
+  color: var(--text);
+}
+.logo-calc {
+  color: #f7931a;
+}
+.logo-badge {
+  padding: 6px 10px;
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  font-weight: 800;
+  line-height: 1;
+  background: rgba(255,255,255,0.03);
+}
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.section-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-title-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+}
+.cico img,
+#selectedCoinImg,
+#calcCoinIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+#calcCoinIcon { mix-blend-mode: normal !important; }
+.topbar-r { display: flex; align-items: center; gap: 10px; }
+.ibtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  transition: all var(--tr);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.ibtn:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+  border-color: var(--border2);
+  box-shadow: 0 10px 24px rgba(79,214,255,0.16);
+}
+
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 34px 22px 130px;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  grid-template-areas:
+    "hero hero"
+    "asset form"
+    "asset results";
+  gap: 22px;
+  align-items: start;
+}
+.ph {
+  grid-area: hero;
+  position: relative;
+  overflow: hidden;
+  padding: 38px 40px;
+  border-radius: 32px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 85% 18%, rgba(56,189,248,0.14), transparent 26%),
+    radial-gradient(circle at 95% 0%, rgba(111,151,255,0.16), transparent 22%),
+    linear-gradient(135deg, rgba(7,13,24,0.98), rgba(4,10,20,0.94));
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+[data-theme="light"] .ph {
+  background:
+    radial-gradient(circle at 85% 18%, rgba(79,124,255,0.12), transparent 26%),
+    radial-gradient(circle at 95% 0%, rgba(14,165,233,0.12), transparent 22%),
+    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(244,248,255,0.92));
+}
+.ph::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+  transform: translateX(-60%);
+  pointer-events: none;
+}
+.ptag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(135,163,255,0.26);
+  background: rgba(255,255,255,0.04);
+  color: var(--accent2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ptag::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  box-shadow: 0 0 16px rgba(79,214,255,0.46);
+}
+h1 {
+  max-width: 760px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+h1 em {
+  font-style: normal;
+  background: linear-gradient(120deg, var(--accent2) 0%, var(--accent3) 50%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.psub {
+  max-width: 720px;
+  color: var(--text3);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+}
+
+.card,
+.results.show,
+.res-hero,
+.pnl-bar,
+.warn,
+.stat {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.card {
+  background: linear-gradient(180deg, var(--surface), var(--surface2));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: var(--shadowsm);
+  transition: transform var(--tr), border-color var(--tr), box-shadow var(--tr), background var(--tr);
+}
+.card:hover { border-color: var(--border2); }
+#coinSelectorCard { grid-area: asset; position: sticky; top: 98px; }
+#mainCalcCard { grid-area: form; }
+.results { grid-area: results; display: none; }
+.results.show {
+  display: grid;
+  gap: 18px;
+}
+.ch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.cico {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.clbl {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+}
+.field {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--panel-soft);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.field:last-child { margin-bottom: 0; }
+.frow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: -0.01em;
+}
+.fhint {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 4px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+.fhint.green { color: var(--long); border-color: rgba(56,231,157,0.22); background: var(--longbg); }
+.fhint.red { color: var(--short); border-color: rgba(255,107,134,0.22); background: var(--shortbg); }
+input[type="number"],
+input[type="text"],
+.lev-manual-input {
+  width: 100%;
+  background: var(--bg2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 14px 16px !important;
+  outline: none;
+  transition: border-color var(--tr), box-shadow var(--tr), transform var(--tr), background var(--tr);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+input[type="number"] { font-family: 'JetBrains Mono', monospace !important; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { display: none; }
+input[type="number"]:focus,
+input[type="text"]:focus,
+.lev-manual-input:focus {
+  border-color: rgba(79,214,255,0.48) !important;
+  box-shadow: 0 0 0 4px rgba(79,214,255,0.10), 0 12px 28px rgba(79,214,255,0.10) !important;
+}
+input::placeholder { color: var(--text3); }
+#coinSearch { padding-left: 48px !important; }
+#coinDropdown {
+  background: var(--surface-strong) !important;
+  border: 1px solid var(--border2) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--shadow) !important;
+}
+#coinList > div {
+  padding: 12px 14px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+}
+#selectedPairDisplay {
+  background: linear-gradient(180deg, rgba(79,214,255,0.10), rgba(124,163,255,0.06)) !important;
+  border: 1px solid rgba(79,214,255,0.22) !important;
+  border-radius: 18px !important;
+  padding: 12px 14px !important;
+}
+#selectedPairName { color: var(--accent2) !important; font-size: 15px !important; }
+#selectedPairFull { color: var(--text3) !important; }
+#selectedPairDisplay button {
+  background: rgba(255,107,134,0.10) !important;
+  border: 1px solid rgba(255,107,134,0.18) !important;
+  color: var(--short) !important;
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
+}
+.tgrp {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  margin-top: 8px;
+}
+.tbtn {
+  flex: 1;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text3);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 11px 10px;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.tbtn:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.06);
+}
+.tbtn.tl {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(56,231,157,0.92), rgba(35,197,94,0.78));
+  border-color: rgba(56,231,157,0.28);
+  box-shadow: 0 10px 24px rgba(56,231,157,0.16);
+}
+.tbtn.ts {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255,107,134,0.92), rgba(225,29,72,0.82));
+  border-color: rgba(255,107,134,0.26);
+  box-shadow: 0 10px 24px rgba(255,107,134,0.14);
+}
+.tbtn.ta {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(135,163,255,0.96), rgba(79,214,255,0.86));
+  border-color: rgba(135,163,255,0.24);
+  box-shadow: 0 10px 24px rgba(79,214,255,0.14);
+}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.levbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+.levbox:focus-within {
+  border-color: rgba(79,214,255,0.44);
+  box-shadow: 0 0 0 4px rgba(79,214,255,0.10), 0 12px 28px rgba(79,214,255,0.10);
+}
+.levnum {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--accent2);
+  min-width: 42px;
+  text-align: center;
+}
+.levx { font-size: 12px; color: var(--text3); }
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  background: linear-gradient(90deg, rgba(135,163,255,0.28), rgba(79,214,255,0.12));
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #fff, #cdeeff);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(79,214,255,0.12), 0 8px 18px rgba(79,214,255,0.24);
+  cursor: pointer;
+  transition: transform var(--tr);
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.14); }
+.levin { width: 56px !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 4px 4px !important; font-size: 13px !important; text-align: center; }
+.levpre { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.lev-manual { margin-top: 12px; }
+.lev-note { margin-top: 8px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text3); }
+.lev-note.err { color: var(--short); }
+.lev-note.ok { color: var(--long); }
+.lp {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.lp:hover {
+  color: var(--text);
+  border-color: var(--border2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(79,214,255,0.12);
+}
+.div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+.div span {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.div::before,
+.div::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.stop-wrap { position: relative; }
+.stop-wrap input { padding-right: 84px !important; }
+.stop-badge {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+  pointer-events: none;
+  letter-spacing: 0.08em;
+}
+.stop-badge.long-stop { background: var(--longbg); color: var(--long); border: 1px solid rgba(56,231,157,0.22); }
+.stop-badge.short-stop { background: var(--shortbg); color: var(--short); border: 1px solid rgba(255,107,134,0.22); }
+.btn-main,
+.btn-ghost {
+  width: 100%;
+  border-radius: 18px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.btn-main {
+  margin-top: 8px;
+  padding: 16px;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+  box-shadow: 0 18px 34px rgba(79,214,255,0.18);
+}
+.btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px rgba(79,214,255,0.24);
+  filter: brightness(1.04);
+}
+.btn-ghost {
+  margin-top: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,0.03);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--border2);
+  background: rgba(255,255,255,0.05);
+}
+.cx, .cm { display: none; }
+.cx.show, .cm.show { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.res-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(79,214,255,0.14), transparent 26%),
+    linear-gradient(180deg, var(--surface), var(--surface2));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 28px 24px 24px;
+  text-align: left;
+  box-shadow: var(--shadowsm);
+}
+.res-hero::before {
+  content: '';
+  position: absolute;
+  inset: auto -80px -60px auto;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  pointer-events: none;
+}
+.res-hero.hl { background: radial-gradient(circle at top right, rgba(56,231,157,0.12), transparent 26%), linear-gradient(180deg, var(--surface), var(--surface2)); }
+.res-hero.hs { background: radial-gradient(circle at top right, rgba(255,107,134,0.12), transparent 26%), linear-gradient(180deg, var(--surface), var(--surface2)); }
+.rtag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.rprice {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(42px, 7vw, 68px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+.rprice.long { color: var(--long); }
+.rprice.short { color: var(--short); }
+.rdist {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.rdist strong { color: var(--gold); }
+.sgrid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.stat {
+  background: linear-gradient(180deg, var(--surface), var(--surface2));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  transition: border-color var(--tr), transform var(--tr);
+}
+.stat:hover { border-color: var(--border2); transform: translateY(-1px); }
+.stat.accent-stat {
+  background: linear-gradient(180deg, rgba(79,214,255,0.10), rgba(15,24,46,0.78));
+  border-color: rgba(79,214,255,0.18);
+}
+.stat.gold-stat {
+  background: linear-gradient(180deg, rgba(247,203,114,0.10), var(--surface2));
+  border-color: rgba(247,203,114,0.20);
+}
+.slbl {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-bottom: 10px;
+}
+.sval {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+.sval.loss { color: var(--short); }
+.sval.gold { color: var(--gold); }
+.ssub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); margin-top: 6px; }
+.pnl-bar {
+  background: linear-gradient(180deg, var(--surface), var(--surface2));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadowsm);
+}
+.pnl-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.pnl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+}
+.pnl-row:last-child { padding-bottom: 0; }
+.pnl-label { font-size: 14px; color: var(--text2); font-weight: 500; }
+.pnl-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; }
+.pnl-value.p { color: var(--long); }
+.pnl-value.l { color: var(--short); }
+.pnl-value.g { color: var(--gold); }
+.pnl-value.n { color: var(--text); }
+.pnl-sep { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+.dist-strip { margin-top: 14px; }
+.ds-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+}
+.ds-track {
+  position: relative;
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+}
+.ds-fill-liq,
+.ds-fill-stop { position: absolute; left: 0; top: 0; height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+.ds-fill-liq { background: linear-gradient(90deg, rgba(255,107,134,0.9), rgba(255,107,134,0.55)); }
+.ds-fill-stop { background: linear-gradient(90deg, rgba(247,203,114,0.95), rgba(247,203,114,0.55)); }
+.warn {
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(247,203,114,0.20);
+  background: linear-gradient(180deg, rgba(247,203,114,0.08), rgba(255,255,255,0.02));
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 1.8;
+  font-family: 'JetBrains Mono', monospace;
+}
+.warn strong { color: var(--text); }
+.fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+  box-shadow: 0 18px 34px rgba(79,214,255,0.22);
+  transition: all var(--tr);
+}
+.fab:hover { transform: translateY(-2px) scale(1.03); }
+.cpanel {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 999;
+  width: 316px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border2);
+  box-shadow: var(--shadow);
+  transform: scale(0.92) translateY(20px);
+  transform-origin: bottom right;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.26s cubic-bezier(.34,1.56,.64,1);
+}
+.cpanel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+.ctop {
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cttl { font-size: 14px; font-weight: 700; color: var(--text); }
+.cx-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text3);
+  cursor: pointer;
+}
+.cx-btn:hover { color: var(--short); border-color: rgba(255,107,134,0.22); }
+.cdisp {
+  padding: 16px 18px 14px;
+  text-align: right;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.cexpr { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text3); min-height: 18px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cnum { font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ckeys { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); }
+.ck {
+  border: none;
+  height: 60px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--tr), color var(--tr);
+}
+.ck:hover { background: var(--surface2); }
+.ck.op { color: var(--accent2); font-weight: 700; }
+.ck.fn { color: var(--text2); font-size: 13px; background: rgba(255,255,255,0.03); }
+.ck.del { color: var(--short); }
+.ck.eq { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; font-size: 22px; font-weight: 700; }
+.ck.dbl { grid-column: span 2; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(135,163,255,0.24); border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (max-width: 1080px) {
+  .wrap {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hero"
+      "asset"
+      "form"
+      "results";
+  }
+  #coinSelectorCard { position: static; }
+}
+@media (max-width: 720px) {
+  .topbar { height: 72px; padding: 0 16px; }
+  .section-title-wrap { gap: 10px; }
+  .section-title-icon { width: 24px; height: 24px; }
+  .wrap { padding: 18px 14px 110px; gap: 16px; }
+  .ph { padding: 28px 22px; border-radius: 24px; }
+  .card, .res-hero, .pnl-bar, .stat, .warn { border-radius: 22px; }
+  .card { padding: 18px; }
+  .g2, .sgrid { grid-template-columns: 1fr; }
+  .cpanel { right: 14px; left: 14px; width: auto; bottom: 88px; }
+  .fab { right: 14px; bottom: 16px; width: 56px; height: 56px; border-radius: 18px; }
+}
+
+</style>
+</head>
+<body>
+<div class="amb amb1"></div>
+<div class="amb amb2"></div>
+<nav class="topbar">
+  <div class="logo"><div class="logo-icon"><img class="brand-mark" src="data:image/png;base64,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" alt="Bitcoin logo"></div><div class="logo-lockup"><span class="logo-wordmark">Futures<span class="logo-calc">Calc.</span></span><span class="logo-badge">PRO</span></div></div>
+  <div class="topbar-r">
+    <button class="ibtn" id="themeToggle" title="Tema Değiştir" aria-label="Tema değiştir" onclick="toggleTheme()">🌙</button>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="ph">
+    <h1>Kripto Likidasyon<br><em>Hesaplama Sistemi</em></h1>
+    <div class="ptag">FuturesCalc. · Kripto Risk Paneli</div>
+    <p class="psub">Kâr/zarar analizi</p>
+  </div>
+  <div class="card" id="coinSelectorCard">
+    <div class="field">
+      <div class="frow"><label>İşlem Çifti / Parite</label><span class="fhint" id="selectedPairHint" style="display:none;">Seçildi ✓</span></div>
+      <div style="position:relative;margin-top:7px;">
+        <input type="text" id="coinSearch" placeholder="Ara: BTC, ETH, SOL..." autocomplete="off"
+          style="width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;padding:13px 16px 13px 44px;outline:none;transition:border-color var(--tr),box-shadow var(--tr);"
+          oninput="filterCoins(this.value)" onfocus="openDropdown()" onblur="setTimeout(closeDropdown,180)">
+        <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none;">🔎</span>
+        <div id="coinDropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;z-index:500;max-height:260px;overflow-y:auto;box-shadow:var(--shadow);">
+          <div id="coinList"></div>
+        </div>
+      </div>
+      <div id="selectedPairDisplay" style="display:none;margin-top:10px;background:var(--acg2);border:1px solid rgba(125,211,252,0.3);border-radius:10px;padding:10px 14px;display:none;align-items:center;gap:10px;">
+        <img id="selectedCoinImg" src="" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;" onerror="this.style.display='none'">
+        <div>
+          <div id="selectedPairName" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);">—</div>
+          <div id="selectedPairFull" style="font-size:11px;color:var(--text3);margin-top:2px;">—</div>
+        </div>
+        <button onclick="clearPair()" style="margin-left:auto;background:var(--shortbg);border:1px solid rgba(255,77,109,0.3);color:var(--short);font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:3px 9px;border-radius:7px;cursor:pointer;">✕ Temizle</button>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="clbl" style="display:flex;align-items:center;padding-right:4px;">Hızlı Seçim:</span>
+        <button class="lp" onclick="quickSelect('BTCUSDT','Bitcoin','BTC','https://s2.coinmarketcap.com/static/img/coins/64x64/1.png')">BTC</button>
+        <button class="lp" onclick="quickSelect('ETHUSDT','Ethereum','ETH','https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png')">ETH</button>
+        <button class="lp" onclick="quickSelect('SOLUSDT','Solana','SOL','https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png')">SOL</button>
+        <button class="lp" onclick="quickSelect('BNBUSDT','BNB','BNB','https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png')">BNB</button>
+        <button class="lp" onclick="quickSelect('XRPUSDT','XRP','XRP','https://s2.coinmarketcap.com/static/img/coins/64x64/52.png')">XRP</button>
+        <button class="lp" onclick="quickSelect('DOGEUSDT','Dogecoin','DOGE','https://s2.coinmarketcap.com/static/img/coins/64x64/74.png')">DOGE</button>
+        <button class="lp" onclick="quickSelect('ADAUSDT','Cardano','ADA','https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png')">ADA</button>
+        <button class="lp" onclick="quickSelect('AVAXUSDT','Avalanche','AVAX','https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png')">AVAX</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="mainCalcCard">
+    <div class="ch">
+      <div class="section-title-wrap">
+        <img class="section-title-icon" src="data:image/png;base64,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" alt="Bitcoin logo">
+        <span class="clbl" id="calcCardLabel">Pozisyon Parametreleri</span>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Pozisyon Türü</label><div class="tgrp" id="sideGrp"><button class="tbtn tl" data-v="long" onclick="sel('sideGrp','long')">▲ Long</button><button class="tbtn" data-v="short" onclick="sel('sideGrp','short')">▼ Short</button></div></div>
+      <div class="field"><label>Marjin Modu</label><div class="tgrp" id="modeGrp"><button class="tbtn ta" data-v="isolated" onclick="sel('modeGrp','isolated');showCross(false)">İzole</button><button class="tbtn" data-v="cross" onclick="sel('modeGrp','cross');showCross(true)">Çapraz</button></div></div>
+    </div>
+    <div class="field"><label>Futures Türü</label><div class="tgrp" id="ftGrp"><button class="tbtn ta" data-v="usds" onclick="sel('ftGrp','usds');showCoinM(false)">USDⓈ-M Futures</button><button class="tbtn" data-v="coinm" onclick="sel('ftGrp','coinm');showCoinM(true)">COIN-M Futures</button></div></div>
+    <div class="g2">
+      <div class="field"><div class="frow"><label>Anapara / Marjin</label><span class="fhint">USDT</span></div><input type="number" id="margin" placeholder="1000" step="any" min="0"></div>
+      <div class="field"><div class="frow"><label>Giriş Fiyatı</label><span class="fhint">USDT</span></div><input type="number" id="entryPrice" placeholder="30000" step="any" min="0"></div>
+    </div>
+    <div class="field">
+      <div class="frow"><label>Kaldıraç</label><span class="fhint" id="levHintBadge">10×</span></div>
+      <div class="levbox"><span class="levnum" id="levDisp">10</span><span class="levx">×</span><input type="range" id="levRange" min="0.1" max="125" value="10" step="0.1" oninput="setLev(this.value)"></div>
+      <div class="levpre"><button class="lp" onclick="setLev(2)">2×</button><button class="lp" onclick="setLev(3)">3×</button><button class="lp" onclick="setLev(5)">5×</button><button class="lp" onclick="setLev(10)">10×</button><button class="lp" onclick="setLev(20)">20×</button><button class="lp" onclick="setLev(50)">50×</button><button class="lp" onclick="setLev(100)">100×</button><button class="lp" onclick="setLev(125)">125×</button></div>
+      <div class="lev-manual"><div class="frow" style="margin-bottom:6px;"><label style="font-size:12px;color:var(--text3);">Manuel Kaldıraç Girişi</label><span class="fhint" style="font-size:10px;">6.4 veya 6,4</span></div><div style="position:relative;"><input type="text" id="levIn" value="10" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="Kaldıraç gir: 6.4" class="lev-manual-input"><span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text3);pointer-events:none;">×</span></div><div class="lev-note" id="levNote">Aralık: 0.1× - 125×</div></div>
+    </div>
+    <div class="cx" id="cxField"><div class="field"><div class="frow"><label>Futures Cüzdan Bakiyesi</label><span class="fhint">Pozisyon dışı kalan</span></div><input type="number" id="walletBal" placeholder="3000" step="any" min="0"></div></div>
+    <div class="cm" id="cmFields"><div class="div"><span>COIN-M Parametreler</span></div><div class="g2"><div class="field"><div class="frow"><label>Pozisyon Büyüklüğü</label><span class="fhint">contract</span></div><input type="number" id="cSize" placeholder="10" step="any" min="0"></div><div class="field"><div class="frow"><label>1 Contract Değeri</label><span class="fhint">USD</span></div><input type="number" id="cVal" placeholder="100" step="any" min="0"></div></div></div>
+    <div class="div"><span>Bakım Marjı</span></div>
+    <div class="g2"><div class="field"><div class="frow"><label>MM Oranı</label><span class="fhint">%</span></div><input type="number" id="mmRate" placeholder="0.40" value="0.40" step="any" min="0"></div><div class="field"><div class="frow"><label>MM Miktarı</label><span class="fhint">amount</span></div><input type="number" id="mmAmt" placeholder="0" value="0" step="any" min="0"></div></div>
+    <div class="div"><span>Stop &amp; Hedef Fiyatlar</span></div>
+    <div class="g2">
+      <div class="field"><div class="frow"><label>Stop Loss Fiyatı</label><span class="fhint red" id="stopHint">SL</span></div><div class="stop-wrap"><input type="number" id="stopPrice" placeholder="Manuel girin" step="any" min="0" oninput="updateStopBadge()"><span class="stop-badge long-stop" id="stopBadge">STOP</span></div></div>
+      <div class="field"><div class="frow"><label>Take Profit / Çıkış Fiyatı</label><span class="fhint green" id="tpHint">TP</span></div><input type="number" id="exitPrice" placeholder="Manuel girin" step="any" min="0"></div>
+    </div>
+    <button class="btn-main" onclick="calculate()">⚡ &nbsp;Hesapla</button>
+    <button class="btn-ghost" onclick="resetAll()">↺ &nbsp;Formu Sıfırla</button>
+  </div>
+  <div class="results" id="results">
+    <div class="res-hero" id="resHero"><div class="rtag">Tahmini Likidasyon Fiyatı</div><div class="rprice" id="liqPrice">—</div><div class="rdist" id="liqDist"></div></div>
+    <div class="sgrid"><div class="stat accent-stat"><div class="slbl">Pozisyon Büyüklüğü</div><div class="sval" id="rSize">—</div></div><div class="stat"><div class="slbl">Başlangıç Marjin</div><div class="sval" id="rMargin">—</div></div><div class="stat"><div class="slbl">Kaldıraç</div><div class="sval gold" id="rLev">—</div></div><div class="stat"><div class="slbl">MM Değeri</div><div class="sval" id="rMM">—</div></div></div>
+    <div class="pnl-bar" id="stopPanel" style="display:none"><div class="pnl-bar-title"><span>🛑</span> Stop Loss Analizi</div><div class="pnl-row"><span class="pnl-label">Stop Fiyatı</span><span class="pnl-value n" id="rStopPrice">—</span></div><div class="pnl-row"><span class="pnl-label">Giriş → Stop Mesafesi</span><span class="pnl-value l" id="rStopDist">—</span></div><div class="pnl-row"><span class="pnl-label">Stop → Likidasyon Tamponu</span><span class="pnl-value g" id="rStopBuf">—</span></div><hr class="pnl-sep"><div class="pnl-row"><span class="pnl-label">Stop'ta Zarar (USDT)</span><span class="pnl-value l" id="rStopLoss">—</span></div><div class="pnl-row"><span class="pnl-label">Stop'ta Zarar (%)</span><span class="pnl-value l" id="rStopLossPct">—</span></div><div class="pnl-row"><span class="pnl-label">Kalan Marjin</span><span class="pnl-value n" id="rStopRemain">—</span></div><div class="dist-strip" id="distStrip"><div class="ds-labels"><span>Likidasyon</span><span>Stop</span><span>Giriş</span></div><div class="ds-track"><div class="ds-fill-liq" id="liqFill" style="width:0%"></div><div class="ds-fill-stop" id="stopFill" style="width:0%"></div></div></div></div>
+    <div class="pnl-bar" id="tpPanel" style="display:none"><div class="pnl-bar-title"><span>🎯</span> Take Profit / Çıkış Analizi</div><div class="pnl-row"><span class="pnl-label">Hedef / Çıkış Fiyatı</span><span class="pnl-value n" id="rExitPrice">—</span></div><div class="pnl-row"><span class="pnl-label">Giriş → Hedef Mesafesi</span><span class="pnl-value p" id="rExitDist">—</span></div><hr class="pnl-sep"><div class="pnl-row"><span class="pnl-label">Kâr / Zarar (USDT)</span><span class="pnl-value" id="rPNL">—</span></div><div class="pnl-row"><span class="pnl-label">Kâr / Zarar (%)</span><span class="pnl-value" id="rPNLp">—</span></div><div class="pnl-row"><span class="pnl-label">ROI (Marjin üzerinden)</span><span class="pnl-value" id="rROI">—</span></div></div>
+    <div class="sgrid" id="rrPanel" style="display:none"><div class="stat gold-stat"><div class="slbl">Risk / Ödül Oranı</div><div class="sval gold" id="rRR">—</div><div class="ssub" id="rRRsub"></div></div><div class="stat"><div class="slbl">Maksimum Kayıp</div><div class="sval loss" id="rMax">—</div><div class="ssub">Likidasyon'da</div></div></div>
+    <div class="warn"><strong>⚠ Dikkat:</strong> Bu likidasyon hesaplayıcı yalnızca fikir vermek amaçlıdır. Gerçek likidasyon fiyatı Binance'in anlık parametrelerine göre farklılık gösterebilir. Long'da gerçek likidasyon <strong>biraz daha yüksek</strong>, short'ta <strong>biraz daha düşük</strong> olabilir.</div>
+  </div>
+</div>
+<button class="fab" onclick="toggleCalc()" title="Hesap Makinesi">🧮</button>
+<div class="cpanel" id="cpanel"><div class="ctop"><span class="cttl">🧮 &nbsp;Hesap Makinesi</span><button class="cx-btn" onclick="toggleCalc()">✕</button></div><div class="cdisp"><div class="cexpr" id="cExpr">&nbsp;</div><div class="cnum" id="cNum">0</div></div><div class="ckeys"><button class="ck fn" onclick="cf('AC')">AC</button><button class="ck fn del" onclick="cf('DEL')">⌫</button><button class="ck fn" onclick="cf('%')">%</button><button class="ck op" onclick="cf('÷')">÷</button><button class="ck" onclick="cf('7')">7</button><button class="ck" onclick="cf('8')">8</button><button class="ck" onclick="cf('9')">9</button><button class="ck op" onclick="cf('×')">×</button><button class="ck" onclick="cf('4')">4</button><button class="ck" onclick="cf('5')">5</button><button class="ck" onclick="cf('6')">6</button><button class="ck op" onclick="cf('−')">−</button><button class="ck" onclick="cf('1')">1</button><button class="ck" onclick="cf('2')">2</button><button class="ck" onclick="cf('3')">3</button><button class="ck op" onclick="cf('+')">+</button><button class="ck dbl" onclick="cf('0')">0</button><button class="ck" onclick="cf('.')">.</button><button class="ck eq" onclick="cf('=')">=</button></div></div>
+<script>
+let _side='long', _mode='isolated', _ft='usds', _calcOpen=false, _lev=10;
+const LEV_MIN=0.1, LEV_MAX=125, LEV_STEP=0.1;
+function syncThemeToggle(){ const btn=document.getElementById('themeToggle'); if(!btn) return; const dark=document.documentElement.getAttribute('data-theme')==='dark'; btn.textContent=dark?'🌙':'☀️'; btn.title=dark?'Gündüz Moduna Geç':'Gece Moduna Geç'; btn.setAttribute('aria-label', dark?'Gündüz moduna geç':'Gece moduna geç'); }
+function toggleTheme(){ const d=document.documentElement; const dark=d.getAttribute('data-theme')==='dark'; d.setAttribute('data-theme', dark?'light':'dark'); syncThemeToggle(); }
+function sel(id,val){ const g=document.getElementById(id); g.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('tl','ts','ta')); const btn=g.querySelector(`[data-v="${val}"]`); if(id==='sideGrp'){ _side=val; btn.classList.add(val==='long'?'tl':'ts'); updateStopBadge(); } else { if(id==='modeGrp') _mode=val; if(id==='ftGrp') _ft=val; btn.classList.add('ta'); } }
+function showCross(v){ document.getElementById('cxField').classList.toggle('show',v); }
+function showCoinM(v){ document.getElementById('cmFields').classList.toggle('show',v); }
+function formatLev(v){ const n=Number(v); return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(/\.0$/,''); }
+function parseLev(v){
+  if(v===undefined||v===null) return null;
+  const cleaned=String(v).trim().replace(',', '.');
+  if(!cleaned) return null;
+  if(!/^\d*\.?\d*$/.test(cleaned)) return NaN;
+  const num=Number(cleaned);
+  return Number.isFinite(num) ? num : NaN;
+}
+function setLevNote(text,type=''){
+  const note=document.getElementById('levNote');
+  if(!note) return;
+  note.className='lev-note'+(type?` ${type}`:'');
+  note.textContent=text;
+}
+function syncLevUI(syncInput=true){
+  const shown=formatLev(_lev);
+  document.getElementById('levRange').value=_lev;
+  document.getElementById('levDisp').textContent=shown;
+  const b=document.getElementById('levHintBadge');
+  if(b) b.textContent=shown+'×';
+  const input=document.getElementById('levIn');
+  input.dataset.lastValid=shown;
+  input.classList.remove('invalid');
+  if(syncInput) input.value=shown;
+}
+function setLev(v,{syncInput=true,note=''}={}){
+  let num=typeof v==='number' ? v : parseLev(v);
+  if(num===null||Number.isNaN(num)) return _lev;
+  num=Math.min(LEV_MAX,Math.max(LEV_MIN,num));
+  num=Math.round(num/LEV_STEP)*LEV_STEP;
+  num=Number(num.toFixed(1));
+  _lev=num;
+  syncLevUI(syncInput);
+  setLevNote(note || `Aralık: ${LEV_MIN}× - ${LEV_MAX}×`);
+  return _lev;
+}
+function normalizeLevInputValue(raw){
+  return String(raw ?? '').replace(',', '.').replace(/[^\d.]/g,'').replace(/(\..*)\./g,'$1');
+}
+function previewLevInput(){
+  const input=document.getElementById('levIn');
+  const raw=normalizeLevInputValue(input.value);
+  if(input.value!==raw) input.value=raw;
+  if(!raw){
+    input.classList.remove('invalid');
+    setLevNote(`Aralık: ${LEV_MIN}× - ${LEV_MAX}×`);
+    return _lev;
+  }
+  const num=parseLev(raw);
+  if(Number.isNaN(num)){
+    input.classList.add('invalid');
+    setLevNote('Sadece sayı girin. 6.4 veya 6,4 kullanabilirsiniz.','err');
+    return _lev;
+  }
+  if(num < LEV_MIN || num > LEV_MAX){
+    input.classList.add('invalid');
+    setLevNote(`Aralık ${LEV_MIN}× ile ${LEV_MAX}× arasında olmalı.`,'err');
+    return _lev;
+  }
+  input.classList.remove('invalid');
+  setLev(num,{syncInput:false,note:'Kaldıraç hazır. Enter veya alan dışı ile sabitle.'});
+  return _lev;
+}
+function commitLevInput(){
+  const input=document.getElementById('levIn');
+  const raw=normalizeLevInputValue(input.value);
+  if(!raw){
+    input.value=formatLev(_lev);
+    input.classList.remove('invalid');
+    setLevNote(`Son geçerli değer geri yüklendi: ${formatLev(_lev)}×`,'ok');
+    return _lev;
+  }
+  const num=parseLev(raw);
+  if(Number.isNaN(num)){
+    input.value=formatLev(_lev);
+    input.classList.remove('invalid');
+    setLevNote(`Geçersiz giriş silindi. Aktif değer: ${formatLev(_lev)}×`,'err');
+    return _lev;
+  }
+  const clamped=Math.min(LEV_MAX,Math.max(LEV_MIN,num));
+  const rounded=Number((Math.round(clamped/LEV_STEP)*LEV_STEP).toFixed(1));
+  const changed=rounded!==num;
+  const msg=changed ? `Değer ${formatLev(rounded)}× olarak düzeltildi.` : 'Kaldıraç güncellendi.';
+  return setLev(rounded,{syncInput:true,note:msg});
+}
+function initLevInput(){
+  const input=document.getElementById('levIn');
+  input.addEventListener('input', previewLevInput);
+  input.addEventListener('blur', commitLevInput);
+  input.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      commitLevInput();
+      input.blur();
+    }
+  });
+}
+function updateStopBadge(){ const badge=document.getElementById('stopBadge'); badge.className='stop-badge '+((_side==='long')?'long-stop':'short-stop'); }
+function fmt(n,d=2){ if(isNaN(n)||!isFinite(n)) return '—'; return n.toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function calculate(){
+  const margin=parseFloat(document.getElementById('margin').value);
+  const lev=commitLevInput();
+  const entry=parseFloat(document.getElementById('entryPrice').value);
+  const mmRate=(parseFloat(document.getElementById('mmRate').value)||0.40)/100;
+  const mmAmt=parseFloat(document.getElementById('mmAmt').value)||0;
+  const stopP=parseFloat(document.getElementById('stopPrice').value);
+  const exitP=parseFloat(document.getElementById('exitPrice').value);
+  const walBal=parseFloat(document.getElementById('walletBal').value)||0;
+  if(!margin||!lev||!entry){ alert('Anapara, Kaldıraç ve Giriş Fiyatı zorunludur.'); return; }
+  let posSize, liqPrice;
+  if(_ft==='coinm'){
+    const cs=parseFloat(document.getElementById('cSize').value);
+    const cv=parseFloat(document.getElementById('cVal').value);
+    if(!cs||!cv){ alert('COIN-M için contract miktarı ve değerini girin.'); return; }
+    posSize = cs*cv;
+    const qty=posSize/entry;
+    liqPrice=_side==='long' ? (entry*qty - margin + mmAmt)/(qty*(1-mmRate)) : (entry*qty + margin - mmAmt)/(qty*(1+mmRate));
+  } else {
+    posSize = margin*lev;
+    const qty=posSize/entry;
+    const wb=_mode==='cross'?walBal:0;
+    liqPrice=_side==='long' ? (entry*qty - margin - wb + mmAmt)/(qty - qty*mmRate) : (entry*qty + margin + wb - mmAmt)/(qty + qty*mmRate);
+  }
+  const qty=posSize/entry;
+  const mmVal=posSize*mmRate + mmAmt;
+  const maxLoss=margin - mmVal;
+  const liqDist=Math.abs(entry-liqPrice)/entry*100;
+  const liqEl=document.getElementById('liqPrice');
+  liqEl.textContent=fmt(liqPrice)+' USDT'; liqEl.className='rprice '+_side;
+  document.getElementById('resHero').className='res-hero '+(_side==='long'?'hl':'hs');
+  document.getElementById('liqDist').innerHTML=`Giriş fiyatından <strong>${fmt(liqDist)}%</strong> ${_side==='long'?'aşağıda':'yukarıda'}`;
+  document.getElementById('rSize').textContent=fmt(posSize)+' USDT';
+  document.getElementById('rMargin').textContent=fmt(margin)+' USDT';
+  document.getElementById('rLev').textContent=lev+'×';
+  document.getElementById('rMM').textContent=fmt(mmVal)+' USDT';
+  document.getElementById('rMax').textContent='−'+fmt(maxLoss)+' USDT';
+  if(!isNaN(stopP)){
+    const stopDist=Math.abs(entry-stopP)/entry*100;
+    const stopBuf=Math.abs(stopP-liqPrice)/entry*100;
+    const stopPNL=_side==='long' ? (stopP-entry)*qty : (entry-stopP)*qty;
+    const stopPct=stopPNL/margin*100;
+    const remaining=margin + stopPNL;
+    document.getElementById('rStopPrice').textContent=fmt(stopP)+' USDT';
+    document.getElementById('rStopDist').textContent='−'+fmt(stopDist)+'%';
+    document.getElementById('rStopBuf').textContent=fmt(stopBuf)+'%';
+    document.getElementById('rStopLoss').textContent=fmt(stopPNL)+' USDT';
+    document.getElementById('rStopLossPct').textContent=fmt(stopPct)+'%';
+    document.getElementById('rStopRemain').textContent=fmt(remaining)+' USDT';
+    const maxRange=Math.abs(entry-liqPrice);
+    const sPct=Math.min(100, Math.abs(entry-stopP)/maxRange*100);
+    document.getElementById('liqFill').style.width='100%';
+    document.getElementById('stopFill').style.width=sPct+'%';
+    document.getElementById('stopPanel').style.display='block';
+  } else {
+    document.getElementById('stopPanel').style.display='none';
+  }
+  let tpPNL=null;
+  if(!isNaN(exitP)){
+    tpPNL=_side==='long' ? (exitP-entry)*qty : (entry-exitP)*qty;
+    const tpPct=tpPNL/margin*100;
+    const roi=tpPct;
+    const tpDist=Math.abs(entry-exitP)/entry*100;
+    const tpDir=(_side==='long')?(exitP>entry?'+':'-'):(exitP<entry?'+':'-');
+    document.getElementById('rExitPrice').textContent=fmt(exitP)+' USDT';
+    document.getElementById('rExitDist').textContent=tpDir+fmt(tpDist)+'%';
+    const pnlEl=document.getElementById('rPNL'); pnlEl.textContent=(tpPNL>=0?'+':'')+fmt(tpPNL)+' USDT'; pnlEl.className='pnl-value '+(tpPNL>=0?'p':'l');
+    const ppEl=document.getElementById('rPNLp'); ppEl.textContent=(tpPct>=0?'+':'')+fmt(tpPct)+'%'; ppEl.className='pnl-value '+(tpPct>=0?'p':'l');
+    const roiEl=document.getElementById('rROI'); roiEl.textContent=(roi>=0?'+':'')+fmt(roi)+'%'; roiEl.className='pnl-value '+(roi>=0?'p':'l');
+    document.getElementById('tpPanel').style.display='block';
+  } else {
+    document.getElementById('tpPanel').style.display='none';
+  }
+  const rrP=document.getElementById('rrPanel');
+  if(!isNaN(stopP)&&!isNaN(exitP)&&tpPNL!==null){
+    const risk=Math.abs(_side==='long'?(stopP-entry)*qty:(entry-stopP)*qty);
+    const reward=Math.abs(tpPNL);
+    const rr=risk>0 ? reward/risk : 0;
+    const rrEl=document.getElementById('rRR'); rrEl.textContent='1 : '+fmt(rr,2); rrEl.className='sval '+(rr>=1?'gold':'loss');
+    document.getElementById('rRRsub').textContent=rr>=1?'Uygun Risk/Ödül':'Düşük Risk/Ödül';
+    rrP.style.display='grid';
+  } else { rrP.style.display='none'; }
+  const res=document.getElementById('results'); res.classList.add('show'); setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+function resetAll(){ ['margin','entryPrice','exitPrice','walletBal','cSize','cVal','stopPrice'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mmRate').value='0.40'; document.getElementById('mmAmt').value='0'; setLev(10); sel('sideGrp','long'); sel('modeGrp','isolated'); sel('ftGrp','usds'); showCross(false); showCoinM(false); _side='long'; _mode='isolated'; _ft='usds'; document.getElementById('results').classList.remove('show'); ['stopPanel','tpPanel'].forEach(id=>document.getElementById(id).style.display='none'); document.getElementById('rrPanel').style.display='none'; }
+function toggleCalc(){ _calcOpen=!_calcOpen; document.getElementById('cpanel').classList.toggle('open',_calcOpen); }
+let cv='0', cex='', cnew=true, clop=false;
+function updC(){ const d=cv.length>13?parseFloat(cv).toExponential(5):cv; document.getElementById('cNum').textContent=d||'0'; document.getElementById('cExpr').textContent=cex||'\u00a0'; }
+function cf(k){ if(k==='AC'){ cv='0'; cex=''; cnew=true; clop=false; updC(); return; } if(k==='DEL'){ cv=cv.length>1?cv.slice(0,-1):'0'; updC(); return; } if(k==='%'){ cv=String(parseFloat(cv)/100); updC(); return; } const isop=['÷','×','−','+'].includes(k); if(isop){ cex=(cex&&!clop?cex+cv+' '+k+' ':cv+' '+k+' '); cnew=true; clop=true; updC(); return; } if(k==='='){ if(!cex){ updC(); return; } const ex=(cex+cv).replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-'); try { const r=Function('"use strict";return('+ex+')')(); cex=ex.replace(/\//g,'÷').replace(/\*/g,'×').replace(/-/g,'−')+' ='; cv=String(parseFloat(r.toFixed(10))); cnew=true; clop=false; } catch(e) { cv='Hata'; } updC(); return; } if(cnew||cv==='0'){ cv=(k==='.'?'0.':k); cnew=false; clop=false; } else { if(k==='.'&&cv.includes('.')) return; cv+=k; clop=false; } updC(); }
+document.addEventListener('keydown',e=>{ if(!_calcOpen) return; const m={'0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','.':'.','Enter':'=','=':'=','Backspace':'DEL','Escape':'AC','+':'+','-':'−','*':'×','/':'÷','%':'%'}; if(m[e.key]){ e.preventDefault(); cf(m[e.key]); } });
+// ── Coin Selector ──────────────────────────────────────────────
+const CMC_COINS = [
+  {sym:'BTC',name:'Bitcoin',id:1},{sym:'ETH',name:'Ethereum',id:1027},{sym:'BNB',name:'BNB',id:1839},
+  {sym:'SOL',name:'Solana',id:5426},{sym:'XRP',name:'XRP',id:52},{sym:'DOGE',name:'Dogecoin',id:74},
+  {sym:'ADA',name:'Cardano',id:2010},{sym:'AVAX',name:'Avalanche',id:5805},{sym:'MATIC',name:'Polygon',id:3890},
+  {sym:'DOT',name:'Polkadot',id:6636},{sym:'LINK',name:'Chainlink',id:1975},{sym:'UNI',name:'Uniswap',id:7083},
+  {sym:'ATOM',name:'Cosmos',id:3794},{sym:'LTC',name:'Litecoin',id:2},{sym:'TRX',name:'TRON',id:1958},
+  {sym:'NEAR',name:'NEAR Protocol',id:6535},{sym:'ICP',name:'Internet Computer',id:8916},{sym:'APT',name:'Aptos',id:21794},
+  {sym:'ARB',name:'Arbitrum',id:11841},{sym:'OP',name:'Optimism',id:11840},{sym:'SUI',name:'Sui',id:20947},
+  {sym:'INJ',name:'Injective',id:7226},{sym:'FTM',name:'Fantom',id:3513},{sym:'SAND',name:'The Sandbox',id:6210},
+  {sym:'MANA',name:'Decentraland',id:1966},{sym:'AAVE',name:'Aave',id:7278},{sym:'CRV',name:'Curve DAO',id:6538},
+  {sym:'MKR',name:'Maker',id:1518},{sym:'SNX',name:'Synthetix',id:2586},{sym:'COMP',name:'Compound',id:5692},
+  {sym:'SUSHI',name:'SushiSwap',id:6758},{sym:'YFI',name:'Yearn.finance',id:5864},{sym:'1INCH',name:'1inch',id:8104},
+  {sym:'ENS',name:'Ethereum Name Service',id:13855},{sym:'GMT',name:'STEPN',id:18069},{sym:'APE',name:'ApeCoin',id:18876},
+  {sym:'LDO',name:'Lido DAO',id:8000},{sym:'PEPE',name:'Pepe',id:24478},{sym:'SHIB',name:'Shiba Inu',id:5994},
+  {sym:'FIL',name:'Filecoin',id:2280},{sym:'VET',name:'VeChain',id:3077},{sym:'ALGO',name:'Algorand',id:4030},
+  {sym:'XLM',name:'Stellar',id:512},{sym:'ETC',name:'Ethereum Classic',id:1321},{sym:'XMR',name:'Monero',id:328},
+  {sym:'HBAR',name:'Hedera',id:4642},{sym:'EGLD',name:'MultiversX',id:6892},{sym:'FLOW',name:'Flow',id:4558},
+  {sym:'THETA',name:'Theta Network',id:2416},{sym:'AXS',name:'Axie Infinity',id:6783},{sym:'GALA',name:'Gala',id:7080},
+  {sym:'WLD',name:'Worldcoin',id:13502},{sym:'SEI',name:'Sei',id:23149},{sym:'TIA',name:'Celestia',id:22861},
+  {sym:'BLUR',name:'Blur',id:23121},{sym:'CFX',name:'Conflux',id:7334},{sym:'AGIX',name:'SingularityNET',id:2424},
+  {sym:'FET',name:'Fetch.ai',id:3773},{sym:'RNDR',name:'Render',id:5690},{sym:'GRT',name:'The Graph',id:6719},
+  {sym:'ROSE',name:'Oasis Network',id:7653},{sym:'KAVA',name:'Kava',id:4846},{sym:'CHZ',name:'Chiliz',id:4066},
+  {sym:'HOT',name:'Holo',id:2682},{sym:'ZIL',name:'Zilliqa',id:2469},{sym:'ONE',name:'Harmony',id:3945},
+  {sym:'OCEAN',name:'Ocean Protocol',id:3911},{sym:'BAT',name:'Basic Attention Token',id:1697},{sym:'ZEC',name:'Zcash',id:1437},
+  {sym:'DASH',name:'Dash',id:131},{sym:'BCH',name:'Bitcoin Cash',id:1831},{sym:'BSV',name:'Bitcoin SV',id:3602},
+];
+
+let _selectedCoin = null;
+
+function imgUrl(id){ return `https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`; }
+
+function renderCoinList(list){
+  const el=document.getElementById('coinList');
+  if(!list.length){ el.innerHTML='<div style="padding:14px 16px;font-size:13px;color:var(--text3);font-family:JetBrains Mono,monospace;">Sonuç bulunamadı</div>'; return; }
+  el.innerHTML=list.slice(0,40).map(c=>`
+    <div onclick="selectCoin('${c.sym}USDT','${c.name}','${c.sym}','${imgUrl(c.id)}')"
+      style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;"
+      onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <img src="${imgUrl(c.id)}" alt="${c.sym}" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;" onerror="this.style.display='none'">
+      <div><div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);">${c.sym}USDT</div><div style="font-size:11px;color:var(--text3);margin-top:1px;">${c.name}</div></div>
+    </div>`).join('');
+}
+
+function filterCoins(q){
+  openDropdown();
+  const f=q.trim().toUpperCase();
+  const res=f?CMC_COINS.filter(c=>c.sym.includes(f)||c.name.toUpperCase().includes(f)):CMC_COINS;
+  renderCoinList(res);
+}
+
+function openDropdown(){
+  const dd=document.getElementById('coinDropdown');
+  dd.style.display='block';
+  if(!document.getElementById('coinSearch').value) renderCoinList(CMC_COINS);
+}
+function closeDropdown(){ document.getElementById('coinDropdown').style.display='none'; }
+
+function selectCoin(pair,name,sym,img){
+  _selectedCoin={pair,name,sym,img};
+  document.getElementById('coinSearch').value=pair;
+  document.getElementById('coinDropdown').style.display='none';
+  const disp=document.getElementById('selectedPairDisplay');
+  disp.style.display='flex';
+  document.getElementById('selectedCoinImg').src=img;
+  document.getElementById('selectedPairName').textContent=pair;
+  document.getElementById('selectedPairFull').textContent=name;
+  document.getElementById('selectedPairHint').style.display='';
+}
+
+function quickSelect(pair,name,sym,img){ selectCoin(pair,name,sym,img); document.getElementById('coinSearch').value=pair; }
+
+function clearPair(){
+  _selectedCoin=null;
+  document.getElementById('coinSearch').value='';
+  document.getElementById('selectedPairDisplay').style.display='none';
+  document.getElementById('selectedPairHint').style.display='none';
+}
+// ── End Coin Selector ──────────────────────────────────────────
+
+initLevInput(); setLev(10); updateStopBadge(); syncThemeToggle();
+</script>
+</body>
+</html>
